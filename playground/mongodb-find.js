@@ -16,20 +16,20 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db)=>{
     }, (err)=>{
        console.log('Unable to return todo', err);
     });
-    //
-    // // db.collection('Todos').find({
-    // //     _id:new ObjectID('59d11643564d153456c014b0')}).toArray({completed: false}).then((docs)=>{
-    // //     console.log('Todos');
-    // //     console.log(JSON.stringify(docs, undefined, 2));
-    // // }, (err)=>{
-    // //     console.log('Unable to fetch todos', err)
-    // // });
-    // db.collection('Todos').find().count().then((count)=>{
-    //     console.log('Todos count:',count);
-    //     //console.log(JSON.stringify(count, undefined, 2));
+
+    // db.collection('Todos').find({
+    //     _id:new ObjectID('59d11643564d153456c014b0')}).toArray({completed: false}).then((docs)=>{
+    //     console.log('Todos');
+    //     console.log(JSON.stringify(docs, undefined, 2));
     // }, (err)=>{
-    //     console.log('Unable to count todos', err)
+    //     console.log('Unable to fetch todos', err)
     // });
+    db.collection('Todos').find().count().then((count)=>{
+        console.log('Todos count:',count);
+        //console.log(JSON.stringify(count, undefined, 2));
+    }, (err)=>{
+        console.log('Unable to count todos', err)
+    });
 
     db.close()
 });
