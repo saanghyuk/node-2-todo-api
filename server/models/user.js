@@ -53,6 +53,25 @@ UserSchema.methods.generateAuthToken = function () {
     });
 };
 
+UserSchema.statics.findByToken=function(token){//static메소드야
+    var User = this; //모델 자체를 잡는거지
+    var decoded;
+
+    try{
+        decoded=jwt.verify(token, 'abc123');
+    }catch(e){
+        // return new Promise((resolve, reject)=>{
+        //     reject() //이렇게 해놓으면 받는 애가 then success case가 아예 실행이 안되지
+        // });
+        return Promise.reject('No!');
+    }
+
+    return User.findOne({
+       '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    })
+};
 var User = mongoose.model('User', UserSchema);
 
-module.exports = {User}
+module.exports = {User};
