@@ -9,7 +9,7 @@ const todos = [{
     _id: new ObjectID(),
     text: 'First test todo'
 }, {
-    _id: new ObjectID(),
+    _id: new <Objec></Objec>tID(),
     text: 'Second test todo',
     completed: true,
     completedAt: 333
