@@ -101,6 +101,20 @@ app.patch('/todos/:id', (req, res) => {
 app.get('/users/me', authenticate, (req, res)=>{
     res.send(req.user);
 });
+
+//POST /uers/login {email, password}
+app.post('/users/login', (req, res)=>{
+    var body = _.pick(req.body, ['email', 'password']);
+
+    User.findByCredentials(body.email, body.password).then((user)=>{
+        return user.generateAuthToken().then((token)=>{
+            res.header('x-auth', token).send(user); //지금 보면, 아예 토큰 바뀌는 거야
+        })
+    }).catch((e)=>{
+        res.status(400).send();
+    })
+});
+
 // POST /users
 app.post('/users', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
@@ -110,6 +124,7 @@ app.post('/users', (req, res) => {
         return user.generateAuthToken();
     }).then((token) => {
         res.header('x-auth', token).send(user);
+        //res.send(token)
     }).catch((e) => {
         res.status(400).send(e);
     })

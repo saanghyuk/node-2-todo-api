@@ -56,8 +56,6 @@ UserSchema.methods.generateAuthToken = function () {
     });
 };
 
-
-
 //몽구스 미들웨어 쓰는 거지
 UserSchema.pre('save', function(next){
     var user =this;
@@ -74,6 +72,27 @@ UserSchema.pre('save', function(next){
     }
 
 });
+
+UserSchema.statics.findByCredentials=function(email, password){
+    var User=this;
+
+    return User.findOne({email}).then((user)=>{
+        if(!user){
+            return Promise.reject();
+        }
+        return new Promise((resolve, reject)=>{ //비크립은 promise를 못보내니깐 이렇게 해놓은거야
+            bcrypt.compare(password, user.password, (err, res)=>{
+                  if(res){
+                      resolve(user)
+                  }else{
+                      reject();
+                  }
+            })
+        })
+    })
+};
+
+
 
 UserSchema.statics.findByToken=function(token){//static메소드야
     var User = this; //모델 자체를 잡는거지
