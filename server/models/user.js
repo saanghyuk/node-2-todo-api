@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
+
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 var UserSchema = new mongoose.Schema({
     email: {
@@ -41,6 +43,7 @@ UserSchema.methods.toJSON = function () { //유저한테 다 보일 필요 없�
     return _.pick(userObject, ['_id', 'email']);
 };
 
+
 UserSchema.methods.generateAuthToken = function () {
     var user = this;
     var access = 'auth';
@@ -52,6 +55,25 @@ UserSchema.methods.generateAuthToken = function () {
         return token;
     });
 };
+
+
+
+//몽구스 미들웨어 쓰는 거지
+UserSchema.pre('save', function(next){
+    var user =this;
+
+    if(user.isModified('password')){
+        bcrypt.genSalt(10, (err, salt)=>{
+            bcrypt.hash(user.password, salt, (err, hash)=>{
+               user.password=hash;
+               next()
+            });
+        });
+    }else{
+        next()
+    }
+
+});
 
 UserSchema.statics.findByToken=function(token){//static메소드야
     var User = this; //모델 자체를 잡는거지
