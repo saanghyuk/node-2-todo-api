@@ -55,7 +55,15 @@ UserSchema.methods.generateAuthToken = function () {
         return token;
     });
 };
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
 
+    return user.update({
+        $pull: {
+            tokens: {token}
+        }
+    });
+};
 //몽구스 미들웨어 쓰는 거지
 UserSchema.pre('save', function(next){
     var user =this;
